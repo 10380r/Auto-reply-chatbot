@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import pya3rt
 from flask import Flask, request, abort
 from linebot import (
     LineBotApi, WebhookHandler
@@ -12,8 +13,15 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi('H/Vecj2Nvdnu7q/NOckQNQpc+jDzZjfOHxw03qmMop8lgANncs01xwVcrQet2Q8KqmSWyaXx5gxi1V4cdLOZyI7KhAFX+5VbEj/rdzSXxWZ6BVt3ZPBaXZl8v57FTrrZugLX9GNhaG/7cUt0Q2sZwwdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('593354068bbc3c108f4e52e180811af6')
+with open('keys.txt', 'r') as f:
+    keys_list = f.readlines()
+    line_token  = keys_list[0]
+    line_secret = keys_list[1]
+    a3rt_key    = keys_list[2]
+
+line_bot_api = LineBotApi(line_token)
+handler      = WebhookHandler(line_secret)
+client       = pya3rt.TalkClient(a3rt_key)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -30,15 +38,23 @@ def callback():
     except InvalidSignatureError:
         abort(400)
 
+    print('callback through')
     return 'OK'
-
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    print(client)
+    reply = get_reply(client, event.message.text)
+    print(reply)
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text))
 
+def get_reply(client, text):
+    print('im in get reply')
+    response = client.talk(text)
+    reply = ((response['results'])[0])['reply']
+    return reply
 
 if __name__ == "__main__":
     app.run()
