@@ -136,16 +136,16 @@ if __name__ == "__main__":
 サーバーを立ち上げ、 http://127.0.0.1:5000/html にアクセスしてみましょう。
 
 ## Step2 実際にLINEのMessaging APIを使用してみる
-必要な設定やツール
-- LINEアカウント
-- ngrok (ローカルサーバを立てて、URLを発行してくれる)
+必要な設定やツール  
+- LINEアカウント  
+- ngrok (ローカルサーバを立てて、URLを発行してくれる)  
 
 ### Macを使用してる方はHomebrewからのインストールをオススメします。
-- Homebrewのインストールがまだの方
-  `$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-  ターミナルに上記コマンドを入力することで、Homebrewを導入することができます
-- ngrokのインストール
-  `$ brew cask install ngrok`
+- Homebrewのインストールがまだの方  
+  `$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`  
+  ターミナルに上記コマンドを入力することで、Homebrewを導入することができます  
+- ngrokのインストール  
+  `$ brew cask install ngrok`  
 
 ### 手続き
 https://developers.line.biz/jp/  
