@@ -1,4 +1,4 @@
-## Step1
+## Step1 
 
 ### Webフレームワークを使用してみる
 - Flask
@@ -135,7 +135,27 @@ if __name__ == "__main__":
 
 サーバーを立ち上げ、 http://127.0.0.1:5000/html にアクセスしてみましょう。
 
-## Step2
+## Step2 実際にLINEのMessaging APIを使用してみる
+必要な設定やツール
+- LINEアカウント
+- ngrok (ローカルサーバを立てて、URLを発行してくれる)
+
+### Macを使用してる方はHomebrewからのインストールをオススメします。
+- Homebrewのインストールがまだの方
+  `$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+  ターミナルに上記コマンドを入力することで、Homebrewを導入することができます
+- ngrokのインストール
+  `$ brew cask install ngrok`
+
+### 手続き
+https://developers.line.biz/jp/  
+にアクセスして、Developerとして登録  
+チャンネル基本設定
+- Webhook URLにngrokで発行したURLを入力(発行の仕方に関しては後述)
+  - その際、 `[乱数].ngrok.io/callback` に書き換え  
+- Webhook送信：`利用する`に変更
+- 自動応答メッセージ：`利用しない`に変更
+
 lineの開発チームが公式で「おうむ返し」のスクリプトを提示しているので、まずはそれを使用して開発してきます。
 https://github.com/line/line-bot-sdk-python
 [公式ドキュメンツ](https://developers.line.biz/ja/reference/messaging-api/)
@@ -197,3 +217,72 @@ def handle_message(event):
 if __name__ == "__main__":
     app.run()
 ```
+
+### ngrokでURL発行
+- ターミナルをもう1画面出す 
+  Macだと `⌘ + N` で新規画面を出せます。
+- ターミナルにて`$ ngrok http 5000` と入力
+  すると
+
+```
+ngrok by @inconshreveable
+(Ctrl+C to quit)
+
+Session Status                online
+Session Expires               7 hours, 59 minutes
+Version                       2.3.25
+Region                        United States (us)
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    http://b1acd61c.ngrok.io -> http://localhost:5000
+Forwarding                    https://b1acd61c.ngrok.io -> http://localhost:5000
+
+Connections                   ttl     opn     rt1     rt5     p50     p90
+                              0       0       0.00    0.00    0.00    0.00
+```
+
+といった様な画面になるかと思います。
+
+`Forwarding` という欄が実際に発行されたURLになります。  
+そこのURLをコピーし、チャンネル基本設定のWebhookURLの欄に格納してください。  
+**URLの末尾に`/callback/`をつけるのを忘れずに**  
+
+### プログラムの実行
+- `$ python app.py`
+- 今までのプログラムが問題なく書けていると、おうむ返しのbotが完成すると思います。
+
+## a3rt APIを使用して、機械学習要素を導入する
+### What is a3rt
+リクルートが出している無料で使用できる機械学習系のAPIです  
+https://a3rt.recruit-tech.co.jp/  
+様々なAPIがありますが、今回は `Talk API` を使用します。Keyを発行しましょう。
+
+### まずはコンソール上で会話できるスクリプトを作成してみる
+サンプルコード
+`talk.py`
+```python
+# -*- coding: utf-8 -*-
+import pya3rt
+
+apikey = "YOUR_API_KEY"
+client = pya3rt.TalkClient(apikey)
+
+results = client.talk("おはよう")
+print(results)
+```
+
+#### 実行
+`$ python talk.py`
+すると、
+```
+{'status': 0, 'message': 'ok', 'results': [{'perplexity': 0.07743213382788067, 'reply': 'おはようございます'}]}
+```
+という様な結果が返ってくるかと思います。  
+この変数`results`は、Pythonの辞書なので、うまく処理することで任意の値のみを得ることができます。  
+
+#### プチ演習
+任意の値を取り出してみましょう
+
+### 最終ミッション
+#### 演習
+上記プログラム二つを組み合わせて、対話ボットを作りましょう。
+
