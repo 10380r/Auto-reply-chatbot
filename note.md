@@ -188,32 +188,40 @@ handler = WebhookHandler('Messaging APIのsecret')
 def test():
     return 'test'
 
+# Webhookからのリクエストをチェックします。
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
-    # X-Line-Signature:各リクエストに発行されるID
+    # リクエストヘッダーから署名検証のための値を取得します。
     signature = request.headers['X-Line-Signature']
 
     # get request body as text
+    # リクエストボディを取得します。
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
     # handle webhook body
+    # 署名を検証し、問題なければhandleに定義されている関数を呼び出す。
     try:
         handler.handle(body, signature)
+    # 署名検証で失敗した場合、例外を出す。
     except InvalidSignatureError:
         abort(400)
 
+    # handleの処理を終えればOK
     return 'OK'
 
-
+#LINEでMessageEvent（普通のメッセージを送信された場合）が起こった場合に、
+#def以下の関数を実行します。
+#reply_messageの第一引数のevent.reply_tokenは、イベントの応答に用いるトークンです。 
+#第二引数には、linebot.modelsに定義されている返信用のTextSendMessageオブジェクトを渡しています。
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text))
 
-
+# おまじない
 if __name__ == "__main__":
     app.run()
 ```
