@@ -3,8 +3,9 @@ import pya3rt
 
 with open('keys.txt','r') as f:
     keys = f.readlines()
-    apikey = keys[2]
+    apikey = keys[2].replace('\n', '')
 
-client = pya3rt.TalkClient(apikey)
-results = client.talk("おはよう")
-print(results)
+while True:
+    client = pya3rt.TalkClient(apikey)
+    results = client.talk(input(''))
+    print('>',results['results'][0]['reply'])
