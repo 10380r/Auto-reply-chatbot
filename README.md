@@ -6,5 +6,5 @@ Necessary to the following API key and token.
 - Line messaging API
 
 ## Setup
-Enter your Token, Secret and API key for Takl API in the `.env`
+Enter your Token, Secret and API key for Takl API in the `.env`  
 See sample : `.env.sample`
