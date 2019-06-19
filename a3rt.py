@@ -1,4 +1,4 @@
-# a3rtをで値を取得するプロトタイプ
+#a3rtをで値を取得するプロトタイプ
 import pya3rt
 
 with open('keys.txt','r') as f:

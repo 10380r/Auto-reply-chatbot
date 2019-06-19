@@ -4,18 +4,16 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+load_dotenv(join(dirname(__file__), '.env'))
 
-with open('keys.txt', 'r') as f:
-    keys_list = f.readlines()
-    line_token  = keys_list[0].replace('\n','')
-    line_secret = keys_list[1].replace('\n','')
-    a3rt_key    = keys_list[2].replace('\n','')
-
-line_bot_api = LineBotApi(line_token)
-handler      = WebhookHandler(line_secret)
-client       = pya3rt.TalkClient(a3rt_key)
+line_bot_api = LineBotApi(os.environ.get('LINE_TOKEN'))
+handler      = WebhookHandler(os.environ.get('LINE_SECRT'))
+client       = pya3rt.TalkClient(os.environ.get('A3RT_KEY'))
 
 @app.route("/callback", methods=['POST'])
 def callback():
